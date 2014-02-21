@@ -3,3 +3,56 @@
 This is the sample application for
 the [*Ruby on Rails Tutorial*](http://railstutorial.org/)
 by [Michael Hartl](http://michaelhartl.com/).
+
+chapter -5
+
+things to notice here
+
+1.proper frontend design
+
+application html.erb
+
+header
+
+<%= yield %>
+
+footer
+
+2.
+
+a.link_to action (if same controller actiom)
+
+      <li><%= link_to "Contact", "contact" %></li>
+
+b.link_to action (if different controller actiom)
+
+     <%= link_to "About",  {:controller => "test1", :action => "t"} %></li>
+
+about_path -> '/about'
+about_url  -> 'http://localhost:3000/about'
+
+3. routes
+get 'static_pages/about'
+
+to
+
+match '/about', to: 'static_pages#about',  via: 'get'
+
+examples :
+
+SampleApp::Application.routes.draw do
+  root  'static_pages#home'
+  match '/help',    to: 'static_pages#help',    via: 'get'
+  match '/about',   to: 'static_pages#about',   via: 'get'
+  match '/contact', to: 'static_pages#contact', via: 'get'
+  match '/signup',  to: 'users#new',            via: 'get'
+  match '/help',    to: 'static_pages#help',    via: 'get'
+  .
+  .
+  .
+end
+
+
+4.using helper function in view
+
+
