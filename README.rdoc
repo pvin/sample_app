@@ -55,4 +55,101 @@ end
 
 4.using helper function in view
 
+chapter 6
 
+Note that, in contrast to the plural convention for controller names, model names are singular: a Users controller,
+but a User model.
+
+running migration
+
+bundle exec rake db:migrate
+
+db:rollback:
+
+$ bundle exec rake db:rollback
+
+rails console --sandbox
+Loading development environment in sandbox (Rails 3.2.13)
+Any modifications you make will be rolled back on exit
+
+
+saving data in model
+
+method: 1
+user = User.new(name: "Michael Hartl", email: "mhartl@example.com")
+user.save
+returns true/false
+
+method: 2
+User.create(name: "A Nother", email: "another@example.org")
+returns object
+
+destroy
+user.destroy
+
+Finding user objects
+
+based on id
+User.find(1)
+
+other parameters
+User.find_by_email("mhartl@example.com")
+from rails4
+User.find_by(email: "mhartl@example.com")
+User.all
+User.first
+
+Updating user objects
+
+method:1
+user
+user.email = "mhartl@example.net"
+user.save
+
+method:2
+user.update_attributes(name: "The Dude", email: "dude@abides.org")
+
+Validations
+(refer model file)
+
+in console to check what type of error prevent from save.
+user.errors.full_messages
+
+format validations
+(refer model file)
+
+Uniqueness validation
+
+The migration for enforcing email uniqueness.
+refer Listing 6.19
+adding indexes to email column of user table.
+
+conver to lowercase before save into db
+in user.rb
+before_save { self.email = email.downcase }
+
+Adding a secure password
+
+achieved by has_secure_password method
+
+create a column to existing table.
+ex : rails generate migration add_email_to_users email:string
+
+gem 'bcrypt-ruby', '3.1.2'
+
+(refer model file)
+---------------------------------
+migration reference :
+
+add column:
+rails generate migration add_password_confirmation_to_users password_confirmation:string
+
+
+remove column:
+rails g migration remove_field_name_from_table_name field_name:datatype
+
+down migration
+rake db:migrate:down VERSION=20140224114216
+----------------------------------
+
+user.authenticate("foobar")

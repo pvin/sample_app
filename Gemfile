@@ -8,7 +8,8 @@ gem 'rails', '3.2.13'
 
 
 group :development, :test do
-  gem 'sqlite3', '1.3.8'
+  gem 'mysql2'
+  #gem 'sqlite3', '1.3.8'
   gem 'rspec-rails', '2.13.1'
 end
 
@@ -34,7 +35,7 @@ end
 gem 'jquery-rails'
 gem 'turbolinks', '1.1.1'
 gem 'jbuilder', '1.0.2'
-
+gem 'bcrypt-ruby', '3.0.0'
 group :doc do
   gem 'sdoc', '0.3.20', require: false
 end
