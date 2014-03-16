@@ -109,6 +109,10 @@ user.save
 method:2
 user.update_attributes(name: "The Dude", email: "dude@abides.org")
 
+Database reset:
+
+bundle exec rake db:reset
+
 Validations
 (refer model file)
 
@@ -153,3 +157,142 @@ rake db:migrate:down VERSION=20140224114216
 ----------------------------------
 
 user.authenticate("foobar")
+
+
+chapter 7
+
+Debug and Rails environments
+<%= debug(params) if Rails.env.development? %>
+
+test rails environment
+
+>> Rails.env
+  => "development"
+  >> Rails.env.development?
+  => true
+  >> Rails.env.test?
+  => false
+
+load environment in console
+
+
+$ rails console test
+  Loading test environment
+  >> Rails.env
+  => "test"
+  >> Rails.env.test?
+  => true
+
+From rails server
+
+rails server --environment production
+or
+rails server -e production
+
+run db:migration in production mode
+
+$ bundle exec rake db:migrate RAILS_ENV=production
+
+HTTP standard
+
+POST
+GET
+PATCH
+DELETE
+
+Gravator:
+
+how to integrate gravitor into application(refer : Listing 7.12.)
+
+form_for
+refer Listing 7.17
+
+cross-site request forgery (CSRF)
+
+erb to html
+
+<%= f.label :name %>
+<%= f.text_field :name %>
+
+produces the HTML
+
+<label for="user_name">Name</label>
+<input id="user_name" name="user[name]" type="text" />
+
+drawack of @user = User.new(params[:user])
+refer 7.3.2
+mass assignment vulnerabilities
+solution :
+params.require(:user).permit(:name, :email, :password, :password_confirmation)
+
+avoid mass assignment vulnerability
+
+class UsersController < ApplicationController
+  .
+  .
+  .
+  def create
+    @user = User.new(user_params)
+    if @user.save
+      # Handle a successful save.
+    else
+      render 'new'
+    end
+  end
+
+  private
+
+    def user_params
+      params.require(:user).permit(:name, :email, :password,
+                                   :password_confirmation)
+    end
+end
+
+params.require(:user).permit(:name, :email, :password, :password_confirmation)
+
+auxiliary method called user_params
+
+@user = User.new(user_params)
+
+Using strong parameters in the create action.
+
+class UsersController < ApplicationController
+  .
+  .
+  .
+  def create
+    @user = User.new(user_params)
+    if @user.save
+      # Handle a successful save.
+    else
+      render 'new'
+    end
+  end
+
+  private
+
+    def user_params
+      params.require(:user).permit(:name, :email, :password,
+                                   :password_confirmation)
+    end
+end
+
+
+track error from console
+
+$ rails console
+>> user = User.new(name: "Foo Bar", email: "foo@invalid",
+?>                 password: "dude", password_confirmation: "dude")
+>> user.save
+=> false
+>> user.errors.full_messages
+=> ["Email is invalid", "Password is too short (minimum is 6 characters)"]
+
+>> user.errors.count
+=> 2
+
+>> user.errors.empty?
+=> false
+>> user.errors.any?
+=> true
+
