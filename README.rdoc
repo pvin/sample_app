@@ -296,3 +296,17 @@ $ rails console
 >> user.errors.any?
 => true
 
+Deploying to production with SSL
+
+Adding size to gravator
+
+The flash ERb in the site layout using content_tag.
+
+<div class="alert alert-<%= key %>"><%= value %></div>
+
+to
+
+<%= content_tag(:div, value, class: "alert alert-#{key}") %>
+
+chapter 8
+
