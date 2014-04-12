@@ -318,4 +318,100 @@ Embedded Ruby:
   # Links for non-signed-in-users
 <% end %>
 
+chapter 9
+
+login accesses control
+
+before_action :signed_in_user, only: [:edit, :update]
+before_action :correct_user,   only: [:edit, :update]
+
+private
+
+  def signed_in_user
+        redirect_to signin_url, notice: "Please sign in." unless signed_in?
+  end
+
+  def correct_user
+        @user = User.find(params[:id])
+        redirect_to(root_url) unless current_user?(@user)
+  end
+
+Pagination
+
+index.html.erb
+
+<%= will_paginate %>
+
+users_controller.rb
+
+def index
+    @users = User.paginate(page: params[:page])
+end
+
+Admin status
+
+$ rails console --sandbox
+>> user = User.first
+>> user.admin?
+=> false
+>> user.toggle!(:admin)
+=> true
+>> user.admin?
+=> true
+
+rake task
+
+namespace :db do
+  desc "Fill database with sample data"
+  task populate: :environment do
+    User.create!(name: "Example User",
+                 email: "example@railstutorial.org",
+                 password: "foobar",
+                 password_confirmation: "foobar",
+                 admin: true)
+    99.times do |n|
+      name  = Faker::Name.name
+      email = "example-#{n+1}@railstutorial.org"
+      password  = "password"
+      User.create!(name: name,
+                   email: email,
+                   password: password,
+                   password_confirmation: password)
+    end
+  end
+end
+
+HAck 1
+
+PATHCH request for hack
+
+patch /users/17?admin=1
+
+
+this is accomplished using strong parameters by calling require and permit on the params hash:
+
+    def user_params
+      params.require(:user).permit(:name, :email, :password,
+                                   :password_confirmation)
+    end
+
+Hack 2
+
+Unfortunately, there’s still a terrible security hole: any sufficiently sophisticated attacker could
+simply issue DELETE requests directly from the command line to delete any user on the site
+
+app/controllers/users_controller.rb
+ before_action :admin_user,     only: :destroy
+
+private
+    .
+    .
+    .
+    def admin_user
+      redirect_to(root_url) unless current_user.admin?
+    end
+
+Hacck 3
+
+admin should not delete him self
 
