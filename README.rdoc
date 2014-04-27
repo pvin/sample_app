@@ -415,3 +415,28 @@ Hacck 3
 
 admin should not delete him self
 
+Chapter 10
+
+lazy evaluation(Proc (procedure) or lambda)
+-> { order('created_at DESC') }
+
+Micropost.where instead of Micropost.find
+
+Here we have used Micropost.where instead of Micropost.find because it returns an empty object if the record
+is not found instead of raising an exception, which is a little easier to test.
+
+microposts.each do |micropost|
+  expect(Micropost.where(id: micropost.id)).to be_empty
+end
+
+
+expect do
+  Micropost.find(micropost)
+end.to raise_error(ActiveRecord::RecordNotFound)
+
+
+importent in chapter 10
+
+1.new methods based on relatioship between tables.
+2.partials to use dynamic object insted of static object.
+
